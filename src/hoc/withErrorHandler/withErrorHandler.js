@@ -9,17 +9,27 @@ const withErrorHandler = (WrappedComponent, axios) => {
             error: null
         }
 
+        // ele execulta antes do render
         componentWillMount () {
-            axios.interceptors.request.use(request => {
+            this.reqInterceptor = axios.interceptors.request.use(request => {
                 this.setState({error: null});
                 return request
             })
-            axios.interceptors.response.use(
+            this.resInterceptor = axios.interceptors.response.use(
                 response => response, 
                 error => {
                 this.setState({error: error});
                 }
             )
+        }
+
+        // componentWillUnmount utilizado para quando o componente não é mais necessario(depois do render)
+        // ele vai cuidar para que não haja vasamento de memoria,
+        // ele vai garantir que sempre que criarmos novos interceptors, os antigos já não estaram
+        // mais vivendo(não estaram mais em memoria, seram descartados depois de utilizados)
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
         }
 
         errorConfirmedHandler = () => {
