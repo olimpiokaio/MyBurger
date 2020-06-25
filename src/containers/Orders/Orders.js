@@ -6,7 +6,7 @@ import axios from '../../axios-orders';
 
 class Orders extends Component {
     state = {
-        orders: null,
+        orders: [],
         loading: true
     }
 
@@ -30,8 +30,12 @@ class Orders extends Component {
     render() {
         return (
             <div>
-                <Order />
-                <Order />
+                {this.state.orders.map(order => (
+                    <Order 
+                        key={order.id}
+                        ingredients={order.ingredients}
+                        price={+order.price} /> // o + converte string em numero
+                ))}
             </div>
         )
     }
